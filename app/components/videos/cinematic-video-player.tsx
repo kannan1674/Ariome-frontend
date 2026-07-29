@@ -277,8 +277,8 @@ export default function CinematicVideoPlayer({
 
     async function initShaka() {
       try {
-        const module = await import('shaka-player')
-        const shaka = (module as any).default ?? module
+        const shakaModule = await import('shaka-player')
+        const shaka = (shakaModule as any).default ?? shakaModule
         shaka.polyfill?.installAllPolyfills?.()
 
         if (!shaka.Player?.isBrowserSupported?.()) {

@@ -14,7 +14,7 @@ export async function register() {
       delete globalThis.localStorage;
     }
   } catch {
-    // @ts-expect-error
+    // @ts-expect-error — drop broken experimental stub
     delete globalThis.localStorage;
   }
 }
