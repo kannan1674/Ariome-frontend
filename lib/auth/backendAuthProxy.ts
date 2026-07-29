@@ -13,7 +13,7 @@ export function normalizeBackendBaseUrl(url: string) {
 
 export function getBackendBase() {
   return normalizeBackendBaseUrl(
-    process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || '',
+    process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'https://ariome.duckdns.org',
   );
 }
 

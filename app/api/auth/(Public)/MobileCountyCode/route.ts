@@ -16,7 +16,6 @@ function dialCodeToDisplay(dialCode: string) {
 export async function GET(_req: NextRequest) {
   try {
     const fullUrl = backendApiUrl('/auth/country-codes');
-    
 
     if (!fullUrl || !getBackendBase()) {
       return NextResponse.json(
@@ -33,24 +32,35 @@ export async function GET(_req: NextRequest) {
         method: 'GET',
         headers: { Accept: 'application/json' },
         signal: controller.signal,
+        cache: 'no-store',
       });
 
       clearTimeout(timeoutId);
 
-      let raw: unknown;
       const responseText = await response.text();
+      let raw: unknown;
       try {
         raw = responseText ? JSON.parse(responseText) : {};
       } catch {
+        const looksLikeHtml = /^\s*</.test(responseText);
         return NextResponse.json(
-          { error: 'Invalid JSON from country-codes backend', rawResponse: responseText },
+          {
+            error: looksLikeHtml
+              ? 'Country-codes backend returned HTML (usually a wrong URL like /api/api/...). Check BACKEND_URL on Vercel — use https://ariome.duckdns.org without /api'
+              : 'Invalid JSON from country-codes backend',
+            upstreamUrl: fullUrl,
+            upstreamStatus: response.status,
+            rawResponse: responseText.slice(0, 500),
+          },
           { status: 502 },
         );
       }
 
       if (!response.ok) {
         return NextResponse.json(
-          typeof raw === 'object' && raw !== null ? raw : { error: 'Country codes request failed' },
+          typeof raw === 'object' && raw !== null
+            ? { ...raw, upstreamUrl: fullUrl }
+            : { error: 'Country codes request failed', upstreamUrl: fullUrl },
           { status: response.status },
         );
       }
@@ -95,7 +105,10 @@ export async function GET(_req: NextRequest) {
         }
         if (error.message.includes('fetch')) {
           return NextResponse.json(
-            { error: 'Unable to connect to backend - check BACKEND_URL and that the API is running' },
+            {
+              error: 'Unable to connect to backend - check BACKEND_URL and that the API is running',
+              upstreamUrl: fullUrl,
+            },
             { status: 503 },
           );
         }
