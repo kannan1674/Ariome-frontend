@@ -17,6 +17,7 @@ export function getBackendBase() {
   );
 }
 
+
 /** Join backend origin with an API path (`/auth/login` or `/api/auth/login`). */
 export function backendApiUrl(path: string) {
   const base = getBackendBase();
