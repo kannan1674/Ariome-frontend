@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getBackendBase } from '@/lib/auth/backendAuthProxy';
 
 /** Allow large video uploads through the BFF proxy (up to 2 GB). */
-export const maxDuration = 1200;
+export const maxDuration = 300;
 
 export async function POST(req: NextRequest) {
   try {
