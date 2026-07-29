@@ -16,6 +16,7 @@ function dialCodeToDisplay(dialCode: string) {
 export async function GET(_req: NextRequest) {
   try {
     const fullUrl = backendApiUrl('/auth/country-codes');
+    
 
     if (!fullUrl || !getBackendBase()) {
       return NextResponse.json(
