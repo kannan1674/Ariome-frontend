@@ -6,8 +6,6 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
-  BookOpen,
-  Crown,
   Loader2,
   Lock,
   Sparkles,

@@ -42,4 +42,8 @@ export const en = {
   },
 } as const;
 
-export type Messages = typeof en;
+export type Messages = {
+  [K in keyof typeof en]: {
+    [P in keyof (typeof en)[K]]: string;
+  };
+};

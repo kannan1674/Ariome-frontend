@@ -1,9 +1,44 @@
 import { SUPPORTED_LOCALES, type Locale } from '@/lib/i18n/locales';
 
+/** Minimal Web Speech API types (not always present in TypeScript DOM lib). */
+export interface SpeechRecognitionResultLike {
+  readonly isFinal: boolean;
+  readonly length: number;
+  [index: number]: SpeechRecognitionAlternativeLike;
+}
+
+export interface SpeechRecognitionAlternativeLike {
+  readonly transcript: string;
+  readonly confidence: number;
+}
+
+export interface SpeechRecognitionEventLike {
+  readonly resultIndex: number;
+  readonly results: {
+    readonly length: number;
+    [index: number]: SpeechRecognitionResultLike;
+  };
+}
+
+export interface SpeechRecognitionLike {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: Event) => void) | null;
+  onend: (() => void) | null;
+  start(): void;
+  stop(): void;
+  abort(): void;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
 declare global {
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
   }
 }
 
@@ -26,15 +61,14 @@ export const SPEECH_LANGUAGES: SpeechLangOption[] = [
 
 export function isSpeechRecognitionSupported() {
   if (typeof window === 'undefined') return false;
-  return !!(window.SpeechRecognition || (window as unknown as { webkitSpeechRecognition?: unknown }).webkitSpeechRecognition);
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 }
 
-export function createSpeechRecognition(lang: string) {
+export function createSpeechRecognition(lang: string): SpeechRecognitionLike | null {
   const Ctor =
     typeof window !== 'undefined'
-      ? window.SpeechRecognition ||
-        (window as unknown as { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition
-      : null;
+      ? window.SpeechRecognition || window.webkitSpeechRecognition
+      : undefined;
   if (!Ctor) return null;
 
   const recognition = new Ctor();

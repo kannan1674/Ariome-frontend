@@ -148,7 +148,7 @@ export default function ProgramsHub() {
                           <Button
                             type="button"
                             size="sm"
-                            variant={complete ? 'outline' : 'default'}
+                            variant={complete ? 'outline' : 'primary'}
                             className={cn(!complete && 'bg-teal-600 hover:bg-teal-500')}
                             disabled={complete}
                             onClick={() => {

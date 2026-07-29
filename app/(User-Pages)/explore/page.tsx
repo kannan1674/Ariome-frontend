@@ -9,7 +9,6 @@ import {
   Crown,
   Loader2,
   Lock,
-  Play,
   Sparkles,
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'

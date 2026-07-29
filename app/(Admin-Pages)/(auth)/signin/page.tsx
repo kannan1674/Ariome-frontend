@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import Script from 'next/script';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -106,6 +106,14 @@ type PostLoginResult = {
 };
 
 export default function SignInForm() {
+  return (
+    <Suspense fallback={null}>
+      <SignInFormContent />
+    </Suspense>
+  );
+}
+
+function SignInFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();

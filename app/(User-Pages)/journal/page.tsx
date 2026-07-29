@@ -24,7 +24,7 @@ import {
 } from 'lucide-react'
 import { StreamingPageHeader, StreamingShell } from '@/app/components/streaming'
 import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
 
 const MOODS = [
   'Peaceful',
@@ -77,6 +77,14 @@ function MoodPicker({
 type JournalTab = 'reflections' | 'dreams'
 
 export default function JournalPage() {
+  return (
+    <Suspense fallback={null}>
+      <JournalPageContent />
+    </Suspense>
+  )
+}
+
+function JournalPageContent() {
   const searchParams = useSearchParams()
   const [tab, setTab] = useState<JournalTab>('reflections')
   const [reflections, setReflections] = useState<ReflectionEntry[]>([])

@@ -59,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         dispatch(
           loginSuccess({
-            token: authToken,
+            token: authToken ?? undefined,
             refreshToken: refreshToken || '',
             session,
             ...(role

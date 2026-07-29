@@ -23,7 +23,7 @@ export interface ApiResponse<T = unknown> {
 interface ResponseData {
   HttpResponse?: {
     Message?: string;
-    StatusCode?: number;
+    StatusCode?: number | boolean;
     Content?: unknown;
   };
   message?: string;

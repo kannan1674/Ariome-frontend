@@ -9,6 +9,8 @@ import {
   createSpeechRecognition,
   isSpeechRecognitionSupported,
   localeFromSpeechCode,
+  type SpeechRecognitionEventLike,
+  type SpeechRecognitionLike,
 } from '@/lib/voice/speechRecognition';
 import { Languages, Loader2, Mic, MicOff } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -27,7 +29,7 @@ export default function VoiceToTextPanel({ onTitle, onDescription, className }: 
   const [interim, setInterim] = useState('');
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   const supported = isSpeechRecognitionSupported();
 
@@ -87,7 +89,7 @@ export default function VoiceToTextPanel({ onTitle, onDescription, className }: 
     recognitionRef.current = recognition;
     let finalTranscript = '';
 
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
+    recognition.onresult = (event: SpeechRecognitionEventLike) => {
       let interimText = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const t = event.results[i][0]?.transcript ?? '';

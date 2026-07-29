@@ -23,21 +23,21 @@ export interface ExploreClipLike {
   aiTranslated?: boolean;
 }
 
-interface ExploreShowcasePosterProps {
-  clip: ExploreClipLike;
+interface ExploreShowcasePosterProps<T extends ExploreClipLike = ExploreClipLike> {
+  clip: T;
   thumbnailUrl: string;
-  onOpen: (clip: ExploreClipLike) => void;
+  onOpen: (clip: T) => void;
   isActiveInViewer: boolean;
   hasFullAccess: boolean;
 }
 
-export function ExploreShowcasePoster({
+export function ExploreShowcasePoster<T extends ExploreClipLike>({
   clip,
   thumbnailUrl,
   onOpen,
   isActiveInViewer,
   hasFullAccess,
-}: ExploreShowcasePosterProps) {
+}: ExploreShowcasePosterProps<T>) {
   const { t } = useTranslations();
   const [displaySeconds, setDisplaySeconds] = useState(clip.durationSeconds);
 

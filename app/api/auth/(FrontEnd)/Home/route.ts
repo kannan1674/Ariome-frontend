@@ -1,17 +1,11 @@
 import { NextRequest } from 'next/server';
-// import { cookies } from 'next/headers';
-import { secureServerApiCall, createSecurityHeaders } from '@/lib/securityInterceptor';
-import { validateAuthToken, createSecureResponse, createSecureErrorResponse } from '@/lib/utils';
+import { secureServerApiCall } from '@/lib/securityInterceptor';
+import { createSecureResponse, createSecureErrorResponse } from '@/lib/utils';
 
 export async function POST(req: NextRequest) {
   
   try {
-    // This is a public endpoint - authentication is optional
-    const rawAuth = req.headers.get('Authorization');
-    const cookieToken = req.cookies.get('authToken')?.value;
-    const token = (rawAuth?.replace(/^Bearer\s+/i, '') || cookieToken) ?? null;
-    
-    // Token is optional for public endpoint - we'll send it if available but won't require it
+    // Public endpoint — auth is optional and handled by the backend when present
 
     const backendUrl = process.env.NEXT_PUBLIC_API_URL;
     if (!backendUrl) {
@@ -47,7 +41,7 @@ export async function POST(req: NextRequest) {
         if (parsedBody && typeof parsedBody === 'object' && Object.keys(parsedBody).length > 0) {
           // Merge with defaults, but remove client_id from body (it goes in headers)
           // If ClubId is empty, use the default
-          const { client_id, client_secret, ...bodyWithoutClientId } = parsedBody;
+          const { client_id: _clientId, client_secret: _clientSecret, ...bodyWithoutClientId } = parsedBody;
           requestBody = { 
             ...requestBody, 
             ...bodyWithoutClientId, 
@@ -64,9 +58,7 @@ export async function POST(req: NextRequest) {
       console.warn('⚠️ [Home Route] Unexpected Content-Type:', contentType);
     }
     
-    // Generate and log security headers (signature, nonce, timestamp)
-    const securityHeaders = await createSecurityHeaders();
-      // Use the public home/events endpoint
+    // Use the public home/events endpoint
     const adminMemberListUrl = `${backendUrl}/public/home/events`;
 
     // Prepare headers for backend request - client_id and client_secret MUST be in headers (like Swagger)
@@ -184,9 +176,6 @@ export async function GET(req: NextRequest) {
         clubId: clubId || defaultClubId
     };
 
-    // Generate and log security headers (signature, nonce, timestamp)
-    // Note: secureServerApiCall will also generate its own headers, but we log here for visibility
-    const securityHeaders = await createSecurityHeaders();
     // Try POST first (most APIs use POST for event-info)
     let response = await secureServerApiCall(
       baseUrl, 

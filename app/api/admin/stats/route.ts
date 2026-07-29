@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (!upstream.ok) {
-      const body = raw as { message?: string; error?: string };
+      const body = raw as { message?: string; error?: string; code?: string };
       return NextResponse.json(
         {
           error: body.message || body.error || 'Failed to load dashboard',

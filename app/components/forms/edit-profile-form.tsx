@@ -94,9 +94,9 @@ export default function EditProfileForm({
   };
 
   // Find the state ID for the current state name
-  const currentStateId = state.find((s) => s.id === formData.state || s.name === formData.state)?.id;
-  const currentCountryId = country.find((c) => c.id === formData.country || c.name === formData.country)?.id;
-  const currentCityId = cities.find((c) => c.id === formData.city || c.name === formData.city)?.id;
+  const currentStateId = state.find((s) => String(s.id) === formData.state || s.name === formData.state)?.id;
+  const currentCountryId = country.find((c) => String(c.id) === formData.country || c.name === formData.country)?.id;
+  const currentCityId = cities.find((c) => String(c.id) === formData.city || c.name === formData.city)?.id;
 
   // Validate if all required fields are filled
   const isFormValid = () => {
@@ -123,10 +123,10 @@ export default function EditProfileForm({
 
     // If state changes, fetch cities for that state
     if (field === 'state') {
-      const selectedState = state.find((s) => s.id === value || s.name === value);
-      if (selectedState?.id) {
+      const selectedState = state.find((s) => String(s.id) === value || s.name === value);
+      if (selectedState?.id != null && selectedState.id !== '') {
         setIsCityLoading(true);
-        dispatch(getCities(selectedState.id)).finally(() => setIsCityLoading(false));
+        dispatch(getCities(String(selectedState.id))).finally(() => setIsCityLoading(false));
         // Clear city when state changes
         setFormData((prev) => ({
           ...prev,
@@ -136,10 +136,10 @@ export default function EditProfileForm({
         return;
       }
     } else if (field === 'country') {
-      const selectedCountry = country.find((c) => c.id === value || c.name === value);
-      if (selectedCountry?.id) {
+      const selectedCountry = country.find((c) => String(c.id) === value || c.name === value);
+      if (selectedCountry?.id != null && selectedCountry.id !== '') {
         setIsStateLoading(true);
-        dispatch(getState(selectedCountry.id)).finally(() => setIsStateLoading(false));
+        dispatch(getState(String(selectedCountry.id))).finally(() => setIsStateLoading(false));
         setFormData((prev) => ({
           ...prev,
           state: '',
@@ -171,42 +171,42 @@ export default function EditProfileForm({
 
   useEffect(() => {
     if (!showEditProfileModal) return;
-    if (country.length > 0 && formData.country && !country.some((c) => c.id === formData.country)) {
+    if (country.length > 0 && formData.country && !country.some((c) => String(c.id) === formData.country)) {
       const match = country.find((c) => c.name === formData.country);
       if (match) {
-        setFormData((prev) => ({ ...prev, country: match.id }));
+        setFormData((prev) => ({ ...prev, country: String(match.id) }));
       }
     }
   }, [showEditProfileModal, country, formData.country]);
  
   useEffect(() => {
-    if (!showEditProfileModal || !currentCountryId) return;
+    if (!showEditProfileModal || currentCountryId == null || currentCountryId === '') return;
     setIsStateLoading(true);
-    dispatch(getState(currentCountryId)).finally(() => setIsStateLoading(false));
+    dispatch(getState(String(currentCountryId))).finally(() => setIsStateLoading(false));
   }, [dispatch, showEditProfileModal, currentCountryId]);
  
   useEffect(() => {
-    if (!showEditProfileModal || !currentStateId) return;
+    if (!showEditProfileModal || currentStateId == null || currentStateId === '') return;
     setIsCityLoading(true);
-    dispatch(getCities(currentStateId)).finally(() => setIsCityLoading(false));
+    dispatch(getCities(String(currentStateId))).finally(() => setIsCityLoading(false));
   }, [dispatch, showEditProfileModal, currentStateId]);
 
   useEffect(() => {
     if (!showEditProfileModal) return;
-    if (state.length > 0 && formData.state && !state.some((s) => s.id === formData.state)) {
+    if (state.length > 0 && formData.state && !state.some((s) => String(s.id) === formData.state)) {
       const match = state.find((s) => s.name === formData.state);
       if (match) {
-        setFormData((prev) => ({ ...prev, state: match.id }));
+        setFormData((prev) => ({ ...prev, state: String(match.id) }));
       }
     }
   }, [showEditProfileModal, state, formData.state]);
 
   useEffect(() => {
     if (!showEditProfileModal) return;
-    if (cities.length > 0 && formData.city && !cities.some((c) => c.id === formData.city)) {
+    if (cities.length > 0 && formData.city && !cities.some((c) => String(c.id) === formData.city)) {
       const match = cities.find((c) => c.name === formData.city);
       if (match) {
-        setFormData((prev) => ({ ...prev, city: match.id }));
+        setFormData((prev) => ({ ...prev, city: String(match.id) }));
       }
     }
   }, [showEditProfileModal, cities, formData.city]);

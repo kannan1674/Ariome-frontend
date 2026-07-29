@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -15,6 +15,14 @@ import { cn } from '@/lib/utils';
 const REGISTER_PENDING_EMAIL_KEY = 'registerPendingEmail';
 
 export default function VerifyMobilePage() {
+  return (
+    <Suspense fallback={null}>
+      <VerifyMobilePageContent />
+    </Suspense>
+  );
+}
+
+function VerifyMobilePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();

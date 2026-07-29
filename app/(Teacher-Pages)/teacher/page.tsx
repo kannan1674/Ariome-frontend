@@ -77,7 +77,7 @@ export default function TeacherUploadPage() {
       setError(`Video must be ${MAX_VIDEO_LABEL} or smaller.`)
       return
     }
-    if (thumbnail.size > MAX_THUMBNAIL_BYTES) {
+    if (thumbToUpload.size > MAX_THUMBNAIL_BYTES) {
       setError(`Thumbnail must be ${MAX_THUMBNAIL_LABEL} or smaller.`)
       return
     }
