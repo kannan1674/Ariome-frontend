@@ -118,6 +118,7 @@ function SignInFormContent() {
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? '';
+  console.log("Google Client ID:", process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
   const googleBtnRef = useRef<HTMLDivElement>(null);
   const googleCredentialHandlerRef = useRef<(credential: string) => void>(() => {});
   const [gsiReady, setGsiReady] = useState(false);
