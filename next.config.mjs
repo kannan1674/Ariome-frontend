@@ -5,7 +5,6 @@ const nextConfig = {
   images: {},
   output: 'standalone',
   experimental: {
-    instrumentationHook: true,
     serverActions: {
       bodySizeLimit: '2gb',
     },
