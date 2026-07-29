@@ -1,0 +1,88 @@
+'use client';
+
+import * as Popover from '@radix-ui/react-popover';
+import { toast } from 'react-toastify';
+import { useRecaptchaV2 } from '@/hooks/use-recaptcha-v2';
+import { Button } from '@/components/ui/button';
+
+interface RecaptchaPopoverProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onVerify: (token: string) => void;
+  trigger: React.ReactNode;
+  verifyButtonText?: string;
+}
+
+export function RecaptchaPopover({
+  open,
+  onOpenChange,
+  onVerify,
+  trigger,
+  verifyButtonText = 'Verify & Submit',
+}: RecaptchaPopoverProps) {
+  const { containerRef, getToken, resetCaptcha, initializeRecaptcha } =
+    useRecaptchaV2(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '');
+
+  const handleOpenChange = (newOpen: boolean) => {
+    onOpenChange(newOpen);
+    if (newOpen) {
+      resetCaptcha();
+      // Small delay to ensure the popover content is rendered
+      setTimeout(() => {
+        initializeRecaptcha();
+      }, 100);
+    }
+  };
+
+  const handleVerify = () => {
+    try {
+      const token = getToken();
+      if (!token) {
+        toast.error('Please complete the reCAPTCHA verification.', {
+          position: 'top-center',
+        });
+        return;
+      }
+      onVerify(token);
+    } catch (error) {
+      console.error('Error getting reCAPTCHA token:', error);
+      toast.error('Please complete the reCAPTCHA verification.', {
+        position: 'top-center',
+      });
+      return;
+    }
+  };
+
+  return (
+    <Popover.Root open={open} onOpenChange={handleOpenChange}>
+      <Popover.Trigger asChild>{trigger}</Popover.Trigger>
+
+      <Popover.Portal>
+        <Popover.Content
+          className="bg-white p-4 rounded-lg shadow-lg z-50"
+          sideOffset={5}
+          align="end"
+          onInteractOutside={(e) => {
+            // Prevent closing when interacting with reCAPTCHA iframe
+            if ((e.target as HTMLElement).tagName === 'IFRAME') {
+              e.preventDefault();
+            }
+          }}
+        >
+          <div className="flex flex-col gap-4">
+            <div ref={containerRef} className="min-h-[78px]" />
+            <Button
+              type="button"
+              variant="mono"
+              onClick={handleVerify}
+              className="w-full"
+            >
+              {verifyButtonText}
+            </Button>
+          </div>
+          <Popover.Arrow className="fill-white" />
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+}

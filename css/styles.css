@@ -1,0 +1,63 @@
+/* Tailwind Core */
+@import 'tailwindcss';
+
+/* ReUI Configs */
+@import './config.reui.css';
+
+/** Global Styles **/
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  *:focus-visible {
+    @apply outline-ring rounded-xs shadow-none outline-2 outline-offset-3 transition-none!;
+  }
+}
+/* Connect Tailwind (ReUI tokens) to Metronic CSS Variables */
+:root {
+  --color-background: var(--bs-body-bg);
+  --color-foreground: var(--bs-body-color);
+  --color-border: var(--bs-border-color);
+  --color-card: var(--bs-card-bg);
+  --color-heading: var(--bs-heading-color);
+}
+
+/* Dark mode also uses the same variables because Metronic switches them automatically */
+html[data-theme="dark"] {
+  --color-background: var(--bs-body-bg);
+  --color-foreground: var(--bs-body-color);
+  --color-border: var(--bs-border-color);
+  --color-card: var(--bs-card-bg);
+  --color-heading: var(--bs-heading-color);
+}
+
+/* Metronic Components  */
+@import './components/image-input.css';
+@import './components/apexcharts.css';
+@import './components/leaflet.css';
+@import './components/rating.css';
+@import './components/image-input.css';
+@import './components/scrollable.css';
+
+/* Demos */
+@import './demos/demo1.css';
+
+/** Dark/Light Theme Variant — support class + data-theme **/
+@custom-variant dark (&:is(.dark *, [data-theme='dark'] *));
+@custom-variant light (&:not(.dark *));
+
+/* Custom Loader */
+.custom-loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #009EF7;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
