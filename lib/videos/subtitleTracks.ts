@@ -2,7 +2,7 @@ import { LOCALE_LABELS, SUPPORTED_LOCALES, type Locale } from '@/lib/i18n/locale
 import type { VideoSubtitleTrack } from './types';
 
 function backendBase(): string {
-  return (process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000').replace(/\/+$/, '');
+  return (process.env.NEXT_PUBLIC_BACKEND_URL || 'https://ariome.duckdns.org').replace(/\/+$/, '');
 }
 
 /** Subtitle URLs for a video when the API omits subtitleTracks. */
