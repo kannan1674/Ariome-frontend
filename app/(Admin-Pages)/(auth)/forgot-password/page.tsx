@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils';
 
 const RESET_PENDING_EMAIL_KEY = 'resetPendingEmail';
 
+
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
