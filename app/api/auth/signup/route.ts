@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import {
+  attachAuthCookies,
+  getBackendBase,
+  toLegacyLoginResponse,
+} from '@/lib/auth/backendAuthProxy';
+import type { BackendAuthSuccess } from '@/lib/auth/sessionTypes';
 
 const DEFAULT_JWT_MAX_AGE_SEC = 60 * 60 * 24 * 7;
-
-function normalizeBackendBaseUrl(url: string) {
-  return url.replace(/\/+$/, '');
-}
 
 /**
  * Proxies to Express POST /api/auth/register
@@ -30,9 +32,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const backendBase = normalizeBackendBaseUrl(
-      process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || '',
-    );
+    const backendBase = getBackendBase();
 
     if (!backendBase) {
       return NextResponse.json(

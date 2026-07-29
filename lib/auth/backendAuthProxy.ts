@@ -2,13 +2,30 @@ import { NextResponse } from 'next/server';
 import type { BackendAuthSuccess, LegacyLoginContent, SessionMeta } from './sessionTypes';
 
 export function normalizeBackendBaseUrl(url: string) {
-  return url.replace(/\/+$/, '');
+  // Routes always append `/api/...`. Strip trailing slashes and a trailing `/api`
+  // so `https://host/api` + `/api/auth/login` does not become `/api/api/...`.
+  return url
+    .trim()
+    .replace(/^["']|["']$/g, '')
+    .replace(/\/+$/, '')
+    .replace(/\/api$/i, '');
 }
 
 export function getBackendBase() {
   return normalizeBackendBaseUrl(
     process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || '',
   );
+}
+
+/** Join backend origin with an API path (`/auth/login` or `/api/auth/login`). */
+export function backendApiUrl(path: string) {
+  const base = getBackendBase();
+  if (!base) return '';
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const withApi = normalizedPath.startsWith('/api/')
+    ? normalizedPath
+    : `/api${normalizedPath}`;
+  return `${base}${withApi}`;
 }
 
 function sessionMetaFromBackend(session: SessionMeta | undefined, token: string) {

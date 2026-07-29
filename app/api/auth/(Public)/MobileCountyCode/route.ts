@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-function normalizeBackendBaseUrl(url: string) {
-  return url.replace(/\/+$/, '');
-}
+import { backendApiUrl, getBackendBase } from '@/lib/auth/backendAuthProxy';
 
 /** Digits-only country calling code for legacy payloads (e.g. "91", "1"). */
 function dialCodeToNumeric(dialCode: string) {
@@ -18,18 +15,14 @@ function dialCodeToDisplay(dialCode: string) {
 
 export async function GET(_req: NextRequest) {
   try {
-    const backendBase = normalizeBackendBaseUrl(
-      process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || '',
-    );
+    const fullUrl = backendApiUrl('/auth/country-codes');
 
-    if (!backendBase) {
+    if (!fullUrl || !getBackendBase()) {
       return NextResponse.json(
         { error: 'Server configuration error - set BACKEND_URL or NEXT_PUBLIC_API_URL' },
         { status: 500 },
       );
     }
-
-    const fullUrl = `${backendBase}/api/auth/country-codes`;
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);

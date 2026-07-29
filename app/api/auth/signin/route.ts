@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   attachAuthCookies,
-  getBackendBase,
+  backendApiUrl,
   toLegacyLoginResponse,
 } from '@/lib/auth/backendAuthProxy';
 import type { BackendAuthSuccess } from '@/lib/auth/sessionTypes';
@@ -35,8 +35,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const backendBase = getBackendBase();
-    if (!backendBase) {
+    const loginUrl = backendApiUrl('/auth/login');
+    if (!loginUrl) {
       return NextResponse.json(
         { error: 'Server configuration error — set BACKEND_URL or NEXT_PUBLIC_API_URL' },
         { status: 500 },
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     try {
-      const upstream = await fetch(`${backendBase}/api/auth/login`, {
+      const upstream = await fetch(loginUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ identifier, password }),

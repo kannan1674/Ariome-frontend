@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-function normalizeBackendBaseUrl(url: string) {
-  return url.replace(/\/+$/, '');
-}
+import { normalizeBackendBaseUrl } from '@/lib/auth/backendAuthProxy';
 
 /**
  * Express: POST /api/auth/verify-email-otp — body { email, otp }

@@ -1,10 +1,7 @@
 import { NextRequest } from 'next/server';
 import { secureServerApiCall } from '@/lib/securityInterceptor';
 import { validateAuthToken, createSecureResponse, createSecureErrorResponse } from '@/lib/utils';
-
-function normalizeBackendBaseUrl(url: string) {
-  return url.replace(/\/+$/, '');
-}
+import { normalizeBackendBaseUrl } from '@/lib/auth/backendAuthProxy';
 
 type BackendProfile = {
   displayName?: string;
